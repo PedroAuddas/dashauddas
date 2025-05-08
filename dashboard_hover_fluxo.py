@@ -66,4 +66,5 @@ app.layout = dbc.Container([
 ], fluid=True)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 8050))  # usa porta do Render ou 8050 localmente
+    app.run(debug=True, host="0.0.0.0", port=port)
