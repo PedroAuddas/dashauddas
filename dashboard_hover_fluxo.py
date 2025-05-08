@@ -8,6 +8,11 @@ import dash_bootstrap_components as dbc
 # Carregar dados
 df = pd.read_excel("fluxo_financeiro_abril2025_com_grafico.xlsx")
 
+# Garantir que os valores sejam formatados em R$
+df['Recebido'] = df['Recebido'].apply(lambda x: f"R$ {x:,.2f}")
+df['Pago'] = df['Pago'].apply(lambda x: f"R$ {x:,.2f}")
+df['Saldo Diário'] = df['Saldo Diário'].apply(lambda x: f"R$ {x:,.2f}")
+
 # Inicializar app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.title = "Dashboard Fluxo Financeiro"
@@ -18,15 +23,15 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col(html.Div([
             html.H5("Total Recebido"),
-            html.H4(f"R$ {df['Recebido'].sum():,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")),
+            html.H4(f"{df['Recebido'].sum()}"),
         ]), width=3),
         dbc.Col(html.Div([
             html.H5("Total Pago"),
-            html.H4(f"R$ {df['Pago'].sum():,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")),
+            html.H4(f"{df['Pago'].sum()}"),
         ]), width=3),
         dbc.Col(html.Div([
             html.H5("Saldo Acumulado"),
-            html.H4(f"R$ {df['Saldo Diário'].sum():,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")),
+            html.H4(f"{df['Saldo Diário'].sum()}"),
         ]), width=3),
         dbc.Col(html.Div([
             html.H5("Antecipações de Lucro"),
@@ -34,6 +39,7 @@ app.layout = dbc.Container([
         ]), width=3),
     ], className="mb-4"),
 
+    # Gráfico interativo de Recebido x Pago
     dcc.Graph(
         id='grafico_fluxo',
         figure=px.bar(
@@ -66,5 +72,4 @@ app.layout = dbc.Container([
 ], fluid=True)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8050))  # usa porta do Render ou 8050 localmente
-    app.run(debug=True, host="0.0.0.0", port=port)
+    app.run(debug=True, host="0.0.0.0", port=8050)
